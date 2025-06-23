@@ -1,0 +1,19 @@
+{
+  "name": "jwt-auth-flow",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\"",
+    "dev": "concurrently \"npm run dev:backend\"",
+    "start:backend": "cd backend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "install:backend": "cd backend && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
