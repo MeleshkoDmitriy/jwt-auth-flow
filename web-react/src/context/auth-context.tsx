@@ -1,7 +1,11 @@
 import { createContext, useState, useEffect, type PropsWithChildren } from 'react'
-import { setTokens, clearTokens, getAccessToken, getRefreshToken, setTokensRefreshCallback } from '../config/api'
+import { setTokensRefreshCallback } from '../config/api'
 import { authService, usersService } from '../services'
 import type { TRole, TUser } from '../types/types'
+import { getAccessToken } from '../utils/local-storage/getAccessToken'
+import { getRefreshToken } from '../utils/local-storage/getRefreshToken'
+import { clearTokens } from '../utils/local-storage/clearTokens'
+import { setTokens } from '../utils/local-storage/setTokens'
 
 interface AuthContextType {
   user: TUser | null

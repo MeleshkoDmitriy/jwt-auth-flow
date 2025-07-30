@@ -4,6 +4,9 @@ import axios, {
   type AxiosResponse,
 } from "axios";
 import { API_ENDPOINTS, BASE_URL } from "../constants/endpoints";
+import { setTokens } from "../utils/local-storage/setTokens";
+import { clearTokens } from "../utils/local-storage/clearTokens";
+import { getRefreshToken } from "../utils/local-storage/getRefreshToken";
 
 // Callback для обновления токенов в auth-context
 let onTokensRefreshed:
@@ -135,25 +138,6 @@ api.interceptors.response.use(
   }
 );
 
-// Функции для работы с токенами
-export const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem("accessToken", accessToken);
-  localStorage.setItem("refreshToken", refreshToken);
-};
-
-export const clearTokens = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-};
-
-export const getAccessToken = () => {
-  return localStorage.getItem("accessToken");
-};
-
-export const getRefreshToken = () => {
-  const token = localStorage.getItem("refreshToken");
-  return token;
-};
 
 // Функция для обновления токенов
 export const refreshTokens = async () => {

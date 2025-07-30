@@ -14,7 +14,7 @@ export const RoleProtectedRoutes = ({
   children,
   requiredRole,
 }: RoleProtectedRoutesProps) => {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading, logout } = useAuth();
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isCheckingRole, setIsCheckingRole] = useState(true);
@@ -22,12 +22,14 @@ export const RoleProtectedRoutes = ({
   useEffect(() => {
     const checkAuthorization = async () => {
       if (!isAuthenticated) {
-        navigate(ROUTES.LOGIN);
+        navigate(ROUTES.LOGIN, { replace: true });
+        logout();
         return;
       }
 
       if (!user) {
-        navigate(ROUTES.LOGIN);
+        navigate(ROUTES.LOGIN, { replace: true });
+        logout();
         return;
       }
 
@@ -45,12 +47,13 @@ export const RoleProtectedRoutes = ({
           setIsAuthorized(true);
         } else {
           // Если нет доступа, перенаправляем на домашнюю страницу
-          navigate(ROUTES.HOME);
+          navigate(ROUTES.HOME, { replace: true });
         }
       } catch (error) {
         console.error("Authorization check failed:", error);
         // При ошибке авторизации перенаправляем на login
-        navigate(ROUTES.LOGIN);
+        navigate(ROUTES.LOGIN, { replace: true });
+        logout();
       } finally {
         setIsCheckingRole(false);
       }
@@ -59,7 +62,7 @@ export const RoleProtectedRoutes = ({
     if (!isLoading) {
       checkAuthorization();
     }
-  }, [isAuthenticated, user, isLoading, requiredRole, navigate]);
+  }, [isAuthenticated, user, isLoading, requiredRole, navigate, logout]);
 
   // Показываем загрузку пока проверяется аутентификация и авторизация
   if (isLoading || isCheckingRole) {
