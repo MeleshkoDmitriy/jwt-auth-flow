@@ -1,115 +1,167 @@
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
+import axios, {
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+  type AxiosResponse,
+} from "axios";
+import { API_ENDPOINTS, BASE_URL } from "../constants/endpoints";
 
-const BASE_URL = 'http://localhost:5000/api/v1/'
+// Callback для обновления токенов в auth-context
+let onTokensRefreshed:
+  | ((accessToken: string, refreshToken: string) => void)
+  | null = null;
+let isRefreshing = false;
 
-export const API_ENDPOINTS = {
-  AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    REFRESH_TOKEN: '/auth/refresh-token',
-    LOGOUT: '/auth/logout',
-  },
-  USERS: {
-    CURRENT: '/users/current',
-  },
-  ROLES: {
-    ADMIN: '/roles/admin',
-    MODERATOR: '/roles/moderator',
-  },
-} as const
+export const setTokensRefreshCallback = (
+  callback: (accessToken: string, refreshToken: string) => void
+) => {
+  onTokensRefreshed = callback;
+};
 
 // Создаем axios instance
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-})
+});
 
 // Интерцептор для добавления access token к запросам
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const accessToken = localStorage.getItem('accessToken')
-    
+    const accessToken = localStorage.getItem("accessToken");
+
     if (accessToken && config.headers) {
-      config.headers.Authorization = accessToken
+      config.headers.Authorization = accessToken;
     }
-    
-    return config
+
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Интерцептор для обработки ответов и refresh token
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response
+    return response;
   },
   async (error) => {
-    const originalRequest = error.config
+    const originalRequest = error.config;
+
+
 
     // Если ошибка 401 и это не повторный запрос
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+
+      originalRequest._retry = true;
+
+      // Если уже идет обновление токенов, ждем
+      if (isRefreshing) {
+
+        return new Promise((resolve, reject) => {
+          const checkRefreshing = () => {
+            if (!isRefreshing) {
+              const newAccessToken = localStorage.getItem("accessToken");
+              if (newAccessToken) {
+                originalRequest.headers.Authorization = newAccessToken;
+                resolve(api(originalRequest));
+              } else {
+                reject(error);
+              }
+            } else {
+              setTimeout(checkRefreshing, 100);
+            }
+          };
+          checkRefreshing();
+        });
+      }
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken')
-        
+        isRefreshing = true;
+        const refreshToken = localStorage.getItem("refreshToken");
+
         if (!refreshToken) {
-          // Нет refresh token, перенаправляем на логин
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-          window.location.href = '/login'
-          return Promise.reject(error)
+          // Нет refresh token, очищаем токены
+          clearTokens();
+          isRefreshing = false;
+          return Promise.reject(error);
         }
 
         // Запрос на обновление токена
-        const response = await axios.post(`${BASE_URL}auth/refresh-token`, {
-          refreshToken
-        })
+        const { accessToken, refreshToken: newRefreshToken } =
+          await refreshTokens();
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data
 
-        // Сохраняем новые токены
-        localStorage.setItem('accessToken', accessToken)
-        localStorage.setItem('refreshToken', newRefreshToken)
+        // Уведомляем auth-context об обновлении токенов
+        if (onTokensRefreshed) {
+          onTokensRefreshed(accessToken, newRefreshToken);
+        }
 
         // Повторяем оригинальный запрос с новым токеном
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`
-        return api(originalRequest)
-
+        originalRequest.headers.Authorization = accessToken;
+        isRefreshing = false;
+        return api(originalRequest);
       } catch (refreshError) {
-        // Ошибка при обновлении токена, очищаем токены и перенаправляем на логин
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-        window.location.href = '/login'
-        return Promise.reject(refreshError)
+        // Ошибка при обновлении токена, очищаем токены
+        clearTokens();
+        isRefreshing = false;
+        return Promise.reject(refreshError);
       }
     }
 
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Функции для работы с токенами
 export const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('accessToken', accessToken)
-  localStorage.setItem('refreshToken', refreshToken)
-}
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken);
+};
 
 export const clearTokens = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
-}
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+};
 
 export const getAccessToken = () => {
-  return localStorage.getItem('accessToken')
-}
+  return localStorage.getItem("accessToken");
+};
 
 export const getRefreshToken = () => {
-  return localStorage.getItem('refreshToken')
-}
+  const token = localStorage.getItem("refreshToken");
+  return token;
+};
 
-export default api
+// Функция для обновления токенов
+export const refreshTokens = async () => {
+  try {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+
+    const response = await axios.post(
+      `${BASE_URL}${API_ENDPOINTS.AUTH.REFRESH_TOKEN}`,
+      {
+        refreshToken,
+      }
+    );
+
+    const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+
+    // Сохраняем новые токены
+    setTokens(accessToken, newRefreshToken);
+
+    return { accessToken, refreshToken: newRefreshToken };
+  } catch (error) {
+    // Если refresh token недействителен, очищаем токены
+    clearTokens();
+    throw error;
+  }
+};
+
+export default api;

@@ -1,5 +1,5 @@
 import api from '../config/api'
-import { API_ENDPOINTS } from '../config/api'
+import { API_ENDPOINTS } from '../constants/endpoints'
 
 interface RoleResponse {
   data: {

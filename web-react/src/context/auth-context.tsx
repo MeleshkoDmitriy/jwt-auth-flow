@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, type PropsWithChildren } from 'react'
-import { setTokens, clearTokens, getAccessToken, getRefreshToken } from '../config/api'
+import { setTokens, clearTokens, getAccessToken, getRefreshToken, setTokensRefreshCallback } from '../config/api'
 import { authService, usersService } from '../services'
 import type { TRole, TUser } from '../types/types'
 
@@ -52,6 +52,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
 
     initAuth()
+
+    // Устанавливаем callback для обновления токенов
+    setTokensRefreshCallback((newAccessToken: string, newRefreshToken: string) => {
+      setAccessToken(newAccessToken)
+      setRefreshToken(newRefreshToken)
+      setTokens(newAccessToken, newRefreshToken)
+    })
   }, [])
 
   const login = async (email: string, password: string) => {
@@ -65,8 +72,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setAccessToken(newAccessToken)
       setRefreshToken(newRefreshToken)
       setUser(userData)
-
-      console.log(response)
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Ошибка входа'
       throw new Error(errorMessage)
@@ -84,8 +89,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setAccessToken(newAccessToken)
       setRefreshToken(newRefreshToken)
       setUser(userData)
-
-      console.log(response)
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Ошибка регистрации'
       throw new Error(errorMessage)
@@ -96,8 +99,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     try {
       // Отправляем запрос на сервер для logout
       await authService.logout()
-    } catch (error) {
-      console.error('Logout error:', error)
+    } catch {
+      // Logout error handled silently
     } finally {
       // Очищаем токены из localStorage и состояния
       clearTokens()
