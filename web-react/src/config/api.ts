@@ -103,9 +103,30 @@ api.interceptors.response.use(
         isRefreshing = false;
         return api(originalRequest);
       } catch (refreshError) {
-        // Ошибка при обновлении токена, очищаем токены
-        clearTokens();
+        // Ошибка при обновлении токена
         isRefreshing = false;
+        
+                 // Делаем logout запрос перед очисткой токенов
+         const accessToken = localStorage.getItem("accessToken");
+         if (accessToken) {
+           try {
+             await axios.get(`${BASE_URL}${API_ENDPOINTS.AUTH.LOGOUT}`, {
+               headers: {
+                 Authorization: accessToken
+               }
+             });
+           } catch (logoutError) {
+             // Игнорируем ошибки logout
+             console.error('Logout error:', logoutError);
+           }
+         }
+        
+        // Очищаем токены
+        clearTokens();
+        
+        // При ошибке refresh token перенаправляем на login
+        window.location.href = '/login';
+        
         return Promise.reject(refreshError);
       }
     }
@@ -158,7 +179,20 @@ export const refreshTokens = async () => {
 
     return { accessToken, refreshToken: newRefreshToken };
   } catch (error) {
-    // Если refresh token недействителен, очищаем токены
+    // Если refresh token недействителен, делаем logout и очищаем токены
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      try {
+        await axios.get(`${BASE_URL}${API_ENDPOINTS.AUTH.LOGOUT}`, {
+          headers: {
+            Authorization: accessToken
+          }
+        });
+      } catch (logoutError) {
+        // Игнорируем ошибки logout
+        console.error('Logout error:', logoutError);
+      }
+    }
     clearTokens();
     throw error;
   }

@@ -22,6 +22,7 @@ export const refreshToken = async (req, res) => {
         HTTP_STATUS.UNAUTHORIZED,
         "Refresh token is not provided!"
       );
+      return;
     }
 
     const decodedRefreshToken = decodeRefreshToken(refreshToken);
@@ -37,6 +38,7 @@ export const refreshToken = async (req, res) => {
         HTTP_STATUS.UNAUTHORIZED,
         "Refresh token is invalid or expired!"
       );
+      return;
     }
 
     await removeRefreshToken(userRefreshToken._id);
@@ -60,6 +62,7 @@ export const refreshToken = async (req, res) => {
         HTTP_STATUS.UNAUTHORIZED,
         "Refresh token is invalid or expired!"
       );
+      return;
     }
 
     sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message);

@@ -49,8 +49,8 @@ export const RoleProtectedRoutes = ({
         }
       } catch (error) {
         console.error("Authorization check failed:", error);
-        // При ошибке перенаправляем на домашнюю страницу
-        navigate(ROUTES.HOME);
+        // При ошибке авторизации перенаправляем на login
+        navigate(ROUTES.LOGIN);
       } finally {
         setIsCheckingRole(false);
       }

@@ -8,6 +8,6 @@ export const decodeRefreshToken = (refreshToken) => {
   try {
     return jwt.verify(refreshToken, refreshTokenSecret);
   } catch (error) {
-    throw new Error("Invalid refresh token!");
+    throw error;
   }
 }

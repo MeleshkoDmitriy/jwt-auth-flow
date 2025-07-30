@@ -9,6 +9,7 @@ export const ensureAuthenticated = async (req, res, next) => {
 
   if (!accessToken) {
     sendErrorResponse(res, HTTP_STATUS.UNAUTHORIZED, "Access token not found!");
+    return;
   }
 
   if (await INVALID_TOKENS.findOne({ accessToken })) {
@@ -17,6 +18,7 @@ export const ensureAuthenticated = async (req, res, next) => {
       HTTP_STATUS.UNAUTHORIZED,
       "Access token is invalid!"
     );
+    return;
   }
 
   try {
@@ -28,7 +30,6 @@ export const ensureAuthenticated = async (req, res, next) => {
     };
 
     next();
-    
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       sendErrorResponse(
@@ -37,6 +38,7 @@ export const ensureAuthenticated = async (req, res, next) => {
         "Access token is expired!",
         CODE.ACCESS_TOKEN_EXPIRED
       );
+      return;
     } else if (error instanceof jwt.JsonWebTokenError) {
       sendErrorResponse(
         res,
@@ -44,8 +46,10 @@ export const ensureAuthenticated = async (req, res, next) => {
         "Access token is invalid!",
         CODE.ACCESS_TOKEN_INVALID
       );
+      return;
     } else {
       sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message);
+      return;
     }
   }
 };

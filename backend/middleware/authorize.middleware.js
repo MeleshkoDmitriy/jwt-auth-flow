@@ -11,14 +11,15 @@ export const authorize = (roles = []) => {
         sendErrorResponse(res, HTTP_STATUS.FORBIDDEN, "Access denied!", {
           hasAccess: false,
         });
+        return;
       }
 
       next();
-      
     } catch (error) {
       sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message, {
         hasAccess: false,
       });
+      return;
     }
   };
 };

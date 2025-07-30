@@ -5,6 +5,6 @@ export const JWT_CONFIG = {
   },
   expiresIn: {
     access_token: "10s",
-    refresh_token: "2m",
+    refresh_token: "20s",
   },
 };
