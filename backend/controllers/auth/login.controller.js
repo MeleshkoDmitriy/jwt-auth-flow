@@ -17,6 +17,7 @@ export const login = async (req, res) => {
         HTTP_STATUS.UNPROCESSABLE_ENTITY,
         "All fields are required!"
       );
+      return;
     }
 
     const user = await findUserByEmail(email);
@@ -27,6 +28,7 @@ export const login = async (req, res) => {
         HTTP_STATUS.UNAUTHORIZED,
         "Email or password is invalid!"
       );
+      return;
     }
 
     const isPasswordMatch = await comparePasswords(password, user.password);
@@ -37,6 +39,7 @@ export const login = async (req, res) => {
         HTTP_STATUS.UNAUTHORIZED,
         "Email or password is invalid!"
       );
+      return;
     }
 
     const accessToken = signAccessToken(user._id);
@@ -46,9 +49,12 @@ export const login = async (req, res) => {
     await insertRefreshToken(user._id, refreshToken);
 
     sendSuccessResponse(res, HTTP_STATUS.OK, "Login successful!", {
-      id: user._id,
-      name: user.name,
-      email: user.email,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       accessToken,
       refreshToken,
     });
