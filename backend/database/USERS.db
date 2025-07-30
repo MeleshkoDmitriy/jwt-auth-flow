@@ -1,2 +1,3 @@
-{"name":"dima","email":"dima@dima.ru","password":"$2b$10$7jDcPiZFhkNKysbAQ/Z4meHoKvzIdJTRNxxEDgoNpRbBORkaOudBu","role":"member","_id":"rnwm0RD4QT9kQPri"}
 {"name":"Dimitrus Narwhal","email":"meleskausas@inbox.ru","password":"$2b$10$kCHAbjjgshBQXuxfOCoPP.dN/egTYDlg71K.lbTgazalANuk8vFgK","role":"admin","_id":"0rW2LVuMYNC9M3T3"}
+{"name":"dima","email":"dima@dima.ru","password":"$2b$10$7jDcPiZFhkNKysbAQ/Z4meHoKvzIdJTRNxxEDgoNpRbBORkaOudBu","role":"member","_id":"rnwm0RD4QT9kQPri"}
+{"name":"ddd","email":"dimameleshko@inbox.ru","password":"$2b$10$6aLn64uLMEeA2XtEyyCUteU/lOIyvL6oLDuwFQdboDLIYrOWFw3VO","role":"moderator","_id":"JNwsG0veYMfqnzKa"}

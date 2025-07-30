@@ -14,7 +14,10 @@ router.get(
     sendSuccessResponse(
       res,
       HTTP_STATUS.OK,
-      "Success! Only admins can access this route!"
+      "Success! Only admins can access this route!",
+      {
+        hasAccess: true,
+      }
     );
   }
 );
@@ -27,7 +30,10 @@ router.get(
     sendSuccessResponse(
       res,
       HTTP_STATUS.OK,
-      "Success! Only moderators and admins can access this route!"
+      "Success! Only moderators and admins can access this route!",
+      {
+        hasAccess: true,
+      }
     );
   }
 );

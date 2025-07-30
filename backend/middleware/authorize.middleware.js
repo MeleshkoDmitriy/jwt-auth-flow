@@ -8,13 +8,17 @@ export const authorize = (roles = []) => {
       const user = await findUserById(req.user.id);
 
       if (!user || !roles.includes(user.role)) {
-        sendErrorResponse(res, HTTP_STATUS.FORBIDDEN, "Access denied!");
+        sendErrorResponse(res, HTTP_STATUS.FORBIDDEN, "Access denied!", {
+          hasAccess: false,
+        });
       }
 
       next();
       
     } catch (error) {
-      sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message);
+      sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message, {
+        hasAccess: false,
+      });
     }
   };
 };

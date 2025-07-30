@@ -7,10 +7,12 @@ export const getCurrentUser = async (req, res) => {
     const user = await findUserById(req.user.id);
 
     sendSuccessResponse(res, HTTP_STATUS.OK, "User fetched successfully!", {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     sendErrorResponse(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, error.message);

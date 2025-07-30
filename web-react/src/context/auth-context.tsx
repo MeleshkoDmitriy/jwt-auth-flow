@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
           // Получаем информацию о пользователе
           const response = await usersService.getCurrentUser()
-          setUser(response.user)
+          setUser(response.data.user)
         }
       } catch {
         // Если токены недействительны, очищаем их

@@ -1,3 +1,3 @@
-export const sendErrorResponse = (res, statusCode, message, code) => {
-  return res.status(statusCode).json({ message, code });
+export const sendErrorResponse = (res, statusCode, message, data) => {
+  return res.status(statusCode).json({ message, data });
 };
