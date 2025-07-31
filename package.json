@@ -3,22 +3,25 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run start:backend\" \"npm run dev:web-react\"",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:web-react\"",
+    "start": "concurrently \"npm run start:backend\" \"npm run dev:web-react\" \"npm start:mobile-expo\"",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:web-react\" \"npm run dev:mobile-expo\"",
     "start:backend": "cd backend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
     "install:backend": "cd backend && npm install",
     "install:web-react": "cd web-react && npm install",
-    "install:all": "npm run install:backend && npm run install:web-react",
+    "install:mobile-expo": "cd mobile-expo && npm install",
+    "install:all": "npm run install:backend && npm run install:web-react && npm run install:mobile-expo",
     "start:web-react": "cd web-react && npm run dev",
     "dev:web-react": "cd web-react && npm run dev",
     "build:backend": "cd backend && npm run build",
-    "clean": "rm -rf node_modules && cd backend && rm -rf node_modules && cd ../web-react && rm -rf node_modules"
+    "start:mobile-expo": "cd mobile-expo && npm run start",
+    "dev:mobile-expo": "cd mobile-expo && npm run start",
+    "clean": "rm -rf node_modules && cd backend && rm -rf node_modules && cd ../web-react && rm -rf node_modules && cd ../mobile-expo && rm -rf node_modules"
   },
   "keywords": ["jwt", "auth", "expo", "react-native", "backend"],
   "author": "",
   "license": "ISC",
-  "description": "JWT Authentication Flow with Backend and Mobile App",
+  "description": "JWT Authentication Flow with Backend, Web and Mobile App",
   "dependencies": {
     "concurrently": "^9.2.0"
   }
