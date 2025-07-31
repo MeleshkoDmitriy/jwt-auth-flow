@@ -14,6 +14,14 @@ export const getToken = async (key: TStorageKeys) => {
   return await SecureStore.getItemAsync(key)
 }
 
+export const getAccessToken = async () => {
+  return await getToken('accessToken')
+}
+
+export const getRefreshToken = async () => {
+  return await getToken('refreshToken')
+}
+
 export const removeToken = async (key: TStorageKeys) => {
   await SecureStore.deleteItemAsync(key)
 }

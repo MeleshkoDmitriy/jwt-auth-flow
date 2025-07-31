@@ -22,8 +22,11 @@ api.interceptors.request.use(async(config: InternalAxiosRequestConfig<any>) => {
 })
 
 api.interceptors.response.use((response: AxiosResponse) => {
+  console.log('Успешный ответ от API:', response.status, response.config.url);
   return response;
 }, async (error) => {
+  console.log('Ошибка от API:', error.response?.status, error.response?.data, error.config?.url);
+  
   const originalRequest = error.config;
 
   if (error.response?.status === 401 && !originalRequest._retry) {
