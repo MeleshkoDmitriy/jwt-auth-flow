@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthActions } from '@/store/useAuthStore';
-import { TRegisterData, TRole } from '@/types';
+import { TRole } from '@/types';
 
 export const RegisterForm = () => {
   const [email, setEmail] = useState('');
@@ -38,7 +38,6 @@ export const RegisterForm = () => {
     try {
       await register({ name, email, password, role: selectedRole });
       
-      // Redirect to main app after successful registration
       router.replace('/(app)/(tabs)/home');
     } catch (error) {
       Alert.alert(

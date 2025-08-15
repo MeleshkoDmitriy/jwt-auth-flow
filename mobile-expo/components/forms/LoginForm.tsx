@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthActions } from '@/store/useAuthStore';
-import { TLoginCredentials } from '@/types';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +29,6 @@ export const LoginForm = () => {
     try {
       await login({ email, password });
       
-      // Redirect to main app after successful login
       router.replace('/(app)/(tabs)/home');
     } catch (error) {
       Alert.alert(

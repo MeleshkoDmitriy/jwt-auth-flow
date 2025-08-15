@@ -1,6 +1,6 @@
-import { authAPI } from '@/services/auth';
+import { authAPI, rolesAPI } from '@/services/auth';
 import { secureStorageService } from './../services/auth/secure-storage.service';
-import { TAccessToken, TLoginCredentials, TUser, TRegisterData } from '@/types';
+import { TAccessToken, TLoginCredentials, TUser, TRegisterData, TRoleAccess } from '@/types';
 import { create } from 'zustand';
 
 interface AuthState {
@@ -10,6 +10,11 @@ interface AuthState {
   isLoading: boolean;
   isRefreshing: boolean;
   error: string | null;
+  hasAccess: {
+    admin: boolean;
+    moderator: boolean;
+  };
+  isCheckingRole: boolean;
 }
 
 interface AuthActions {
@@ -23,6 +28,7 @@ interface AuthActions {
   setRefreshing: (refreshing: boolean) => void;
   setError: (error: string) => void;
   clearError: () => void;
+  checkRoleAccess: (role: TRoleAccess) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthState & { actions: AuthActions }>((set, get) => ({
@@ -32,6 +38,11 @@ export const useAuthStore = create<AuthState & { actions: AuthActions }>((set, g
   isLoading: false,
   isRefreshing: false,
   error: null,
+  hasAccess: {
+    admin: false,
+    moderator: false,
+  },
+  isCheckingRole: false,
 
   actions: {
     setAccessToken: (token: string) => set({ accessToken: token }),
@@ -126,6 +137,37 @@ export const useAuthStore = create<AuthState & { actions: AuthActions }>((set, g
           isAuthenticated: false,
           error: null,
         });
+      }
+    },
+
+    checkRoleAccess: async (role: TRoleAccess) => {
+      try {
+        set({ isCheckingRole: true });
+        
+        const response = await rolesAPI.getRoleAccess(role);
+        const hasAccess = response.data.hasAccess;
+
+        console.log('checkRoleAccess response', response);
+        
+        set(state => ({
+          hasAccess: {
+            ...state.hasAccess,
+            [role]: hasAccess
+          },
+        }));
+        
+        return hasAccess;
+      } catch (error) {
+        console.error(`Error checking ${role} access:`, error);
+        set(state => ({
+          hasAccess: {
+            ...state.hasAccess,
+            [role]: false
+          },
+        }));
+        return false;
+      } finally {
+        set({ isCheckingRole: false });
       }
     },
 

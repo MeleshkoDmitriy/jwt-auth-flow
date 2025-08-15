@@ -1,4 +1,5 @@
 export type TRole = 'admin' | 'moderator' | 'member';
+export type TRoleAccess = Exclude<TRole, 'member'>;
 
 export type TUser = {
   id: string;
@@ -6,3 +7,4 @@ export type TUser = {
   email: string;
   role: TRole;
 };
+

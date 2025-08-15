@@ -58,3 +58,10 @@ export interface ApiError {
   status: number;
   errors?: AuthError[];
 }
+
+export interface AuthRoleResponse {
+  message: string;
+  data: {
+    hasAccess: boolean;
+  };
+}

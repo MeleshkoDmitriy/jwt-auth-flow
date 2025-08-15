@@ -25,7 +25,6 @@ export const authAPI = {
     return response.data;
   },
   logout: async (): Promise<void> => {
-    const response = await apiClient.get(API_ENDPOINTS.AUTH.LOGOUT);
-    console.log(response);
+    await apiClient.get(API_ENDPOINTS.AUTH.LOGOUT);
   },
 };

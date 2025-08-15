@@ -22,6 +22,9 @@ export default function HomeScreen() {
         <Text style={styles.greeting}>
           Hello, {user?.name || 'User'}! 👋
         </Text>
+        <Text style={styles.description}>
+          Your role: {user?.role || 'unknown'}
+        </Text>
         
         <Text style={styles.description}>
           This is your main dashboard. Here you can see all your important information.
