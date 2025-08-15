@@ -30,6 +30,7 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     console.log('interceptors.response', error.response?.status);
+    console.log('interceptors.response', error.response);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from '../../../hooks/useAuth'
 import { ROUTES } from '../../../constants/routes'
 import { useNavigate } from 'react-router-dom'
+import styles from '../forms.module.css'
+import buttonStyles from '../../shared/buttons.module.css'
 
 interface LoginFormData {
   email: string
@@ -34,67 +36,68 @@ export const LoginForm = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register('email', {
-              required: 'Email обязателен',
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Введите корректный email'
-              }
-            })}
-            placeholder="Введите ваш email"
-            disabled={isSubmitting}
-            onFocus={() => clearErrors('email')}
-          />
-          {errors.email && (
-            <p>{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label htmlFor="password">
-            Пароль
-          </label>
-          <input
-            id="password"
-            type="password"
-            {...register('password', {
-              required: 'Пароль обязателен',
-              minLength: {
-                value: 6,
-                message: 'Пароль должен содержать минимум 6 символов'
-              }
-            })}
-            placeholder="Введите ваш пароль"
-            disabled={isSubmitting}
-            onFocus={() => clearErrors('password')}
-          />
-          {errors.password && (
-            <p>{errors.password.message}</p>
-          )}
-        </div>
-
-        {errors.root && (
-          <div>
-            <p>{errors.root.message}</p>
-          </div>
-        )}
-
-        <button
-          type="submit"
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <div className={styles.formGroup}>
+        <label htmlFor="email" className={styles.label}>
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          className={styles.input}
+          {...register('email', {
+            required: 'Email обязателен',
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Введите корректный email'
+            }
+          })}
+          placeholder="Введите ваш email"
           disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Вход...' : 'Войти'}
-        </button>
-      </form>
-    </div>
+          onFocus={() => clearErrors('email')}
+        />
+        {errors.email && (
+          <p className={styles.error}>{errors.email.message}</p>
+        )}
+      </div>
+
+      <div className={styles.formGroup}>
+        <label htmlFor="password" className={styles.label}>
+          Пароль
+        </label>
+        <input
+          id="password"
+          type="password"
+          className={styles.input}
+          {...register('password', {
+            required: 'Пароль обязателен',
+            minLength: {
+              value: 6,
+              message: 'Пароль должен содержать минимум 6 символов'
+            }
+          })}
+          placeholder="Введите ваш пароль"
+          disabled={isSubmitting}
+          onFocus={() => clearErrors('password')}
+        />
+        {errors.password && (
+          <p className={styles.error}>{errors.password.message}</p>
+        )}
+      </div>
+
+      {errors.root && (
+        <div className={styles.rootError}>
+          <p>{errors.root.message}</p>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className={buttonStyles.primaryButton}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Вход...' : 'Войти'}
+      </button>
+    </form>
   )
 }
