@@ -1,15 +1,19 @@
 import { authAPI, secureStorageService } from '@/services/auth';
 import { useAuthStore } from '@/store';
+import { BASE_URL } from '@/constants/endpoints';
 import axios from 'axios';
 
-const baseURL = process.env.EXPO_PUBLIC_BASE_URL;
+const baseURL = BASE_URL;
 
 export const apiClient = axios.create({
   baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, 
 });
+
+console.log('Axios client created with baseURL:', baseURL);
 
 apiClient.interceptors.request.use(
   (config) => {

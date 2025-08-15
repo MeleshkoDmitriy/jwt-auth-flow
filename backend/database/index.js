@@ -6,8 +6,22 @@ import fs from "fs/promises";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dbFolder = path.join(__dirname);
 
-await fs.mkdir(dbFolder, { recursive: true });
+try {
+  await fs.mkdir(dbFolder, { recursive: true });
+} catch (error) {
+  console.error('❌ Error creating database folder:', error);
+}
 
-export const USERS = Datastore.create(path.join(dbFolder, "USERS.db"));
-export const REFRESH_TOKENS = Datastore.create(path.join(dbFolder, "REFRESH_TOKENS.db"));
-export const INVALID_TOKENS = Datastore.create(path.join(dbFolder, "INVALID_TOKENS.db")); 
+let USERS, REFRESH_TOKENS, INVALID_TOKENS;
+
+try {
+  USERS = Datastore.create(path.join(dbFolder, "USERS.db"));
+  REFRESH_TOKENS = Datastore.create(path.join(dbFolder, "REFRESH_TOKENS.db"));
+  INVALID_TOKENS = Datastore.create(path.join(dbFolder, "INVALID_TOKENS.db"));
+  console.log('✅ Databases initialized successfully');
+} catch (error) {
+  console.error('❌ Error creating databases:', error);
+  throw error;
+}
+
+export { USERS, REFRESH_TOKENS, INVALID_TOKENS }; 

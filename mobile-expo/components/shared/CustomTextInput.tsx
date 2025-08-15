@@ -42,6 +42,8 @@ export const CustomTextInput: React.FC<CustomTextInputProps> = ({
           inputStyle,
         ]}
         placeholderTextColor="#999"
+        autoCapitalize='none'
+        autoCorrect={false}
         {...textInputProps}
       />
       

@@ -1,4 +1,4 @@
-import { ENDPOINTS } from '@/constants';
+import { API_ENDPOINTS } from '@/constants/endpoints';
 import { apiClient } from '@/lib/axios';
 import {
   AuthLoginResponse,
@@ -10,22 +10,22 @@ import {
 
 export const authAPI = {
   login: async (credentials: TLoginCredentials): Promise<AuthLoginResponse> => {
-    const response = await apiClient.post(ENDPOINTS.AUTH.LOGIN, credentials);
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
 
     return response.data;
   },
   register: async (data: TRegisterData): Promise<AuthRegisterResponse> => {
-    const response = await apiClient.post(ENDPOINTS.AUTH.REGISTER, data);
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, data);
 
     return response.data;
   },
   refreshToken: async (refreshToken: string): Promise<AuthRefreshResponse> => {
-    const response = await apiClient.post(ENDPOINTS.AUTH.REFRESH_TOKEN, { refreshToken });
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, { refreshToken });
 
     return response.data;
   },
   logout: async (): Promise<void> => {
-    const response = await apiClient.post(ENDPOINTS.AUTH.LOGOUT);
+    const response = await apiClient.get(API_ENDPOINTS.AUTH.LOGOUT);
     console.log(response);
   },
 };

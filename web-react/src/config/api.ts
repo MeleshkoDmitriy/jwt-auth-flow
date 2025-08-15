@@ -20,7 +20,6 @@ export const setTokensRefreshCallback = (
   onTokensRefreshed = callback;
 };
 
-// Создаем axios instance
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -28,7 +27,6 @@ export const api: AxiosInstance = axios.create({
   },
 });
 
-// Интерцептор для добавления access token к запросам
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const accessToken = localStorage.getItem("accessToken");

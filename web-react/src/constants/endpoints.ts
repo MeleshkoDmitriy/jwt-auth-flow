@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:5000/api/v1/'
+export const BASE_URL = 'http://10.231.32.162:5555/api/v1/'
 
 export const API_ENDPOINTS = {
   AUTH: {

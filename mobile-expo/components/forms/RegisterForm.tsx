@@ -22,7 +22,7 @@ export const RegisterForm = () => {
   const router = useRouter();
 
   const roles: { value: TRole; label: string }[] = [
-    { value: 'member', label: 'User' },
+    { value: 'member', label: 'Member' },
     { value: 'moderator', label: 'Moderator' },
     { value: 'admin', label: 'Administrator' },
   ];
