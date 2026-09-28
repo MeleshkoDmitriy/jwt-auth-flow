@@ -15,7 +15,7 @@ This project demonstrates a complete authentication flow implementation with thr
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌──────────────────┐ 
 │   Mobile App    │    │   Web App       │    │   Backend API    │
-│   (React Native)│    │   (React)       │    │   (Node.js)      │
+│ (React Native)  │    │   (React)       │    │    (Node.js)     │
 │                 │    │                 │    │                  │
 │ • JWT Auth      │    │ • JWT Auth      │    │ • JWT Generation │
 │ • Secure Store  │    │ • Local Storage │    │ • Token Refresh  │
